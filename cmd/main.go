@@ -73,8 +73,11 @@ func loadPubSub(cfg *config.Config) (pubsub.PubSub, error) {
 	}
 }
 
-func loadServer(ps pubsub.PubSub) (*server.Server, error) {
-	srv := server.NewServer()
+func loadServer(cfg *config.Config, ps pubsub.PubSub) (*server.Server, error) {
+	srv := server.NewServer(server.Options{
+		ServeStatic: cfg.Server.ServeStatic,
+		StaticPath:  cfg.Server.StaticPath,
+	})
 	srv.LoadRoutes(ps, ps)
 
 	return srv, nil
@@ -100,7 +103,7 @@ func main() {
 		fatal("fault load pubsub", err)
 	}
 
-	srv, err := loadServer(ps)
+	srv, err := loadServer(cfg, ps)
 	if err != nil {
 		fatal("fault load server", err)
 	}

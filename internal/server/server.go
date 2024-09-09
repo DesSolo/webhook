@@ -10,13 +10,15 @@ import (
 
 // Server HTTP server
 type Server struct {
-	mux chi.Router
+	mux     chi.Router
+	options Options
 }
 
 // NewServer creates new HTTP server
-func NewServer() *Server {
+func NewServer(o Options) *Server {
 	return &Server{
-		mux: chi.NewRouter(),
+		mux:     chi.NewRouter(),
+		options: o,
 	}
 }
 
@@ -39,6 +41,12 @@ func (s *Server) LoadRoutes(p handlers.Publisher, sb handlers.Subscriber) {
 	s.mux.Handle("/ws", handlers.HandleWS(sb))
 
 	s.mux.Get("/health", handlers.HandleHealth())
+
+	if s.options.ServeStatic {
+		s.mux.Handle("/*", http.FileServer(
+			http.Dir(s.options.StaticPath),
+		))
+	}
 }
 
 // Run starts HTTP server

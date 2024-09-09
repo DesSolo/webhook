@@ -21,6 +21,13 @@ logging:
   # args:
   #   foo: bar
 
+# server settings block
+server:
+  # serve static files (default false)
+  serve_static: true
+  # path for static files
+  static_path: "front"
+
 # pubsub settings block
 pubsub:
   # kind of pubsub

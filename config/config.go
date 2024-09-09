@@ -16,6 +16,10 @@ type Config struct {
 		} `yaml:"options"`
 		Args map[string]string `yaml:"args"`
 	} `yaml:"logging"`
+	Server struct {
+		ServeStatic bool   `yaml:"serve_static"`
+		StaticPath  string `yaml:"static_path"`
+	}
 	PubSub struct {
 		Kind  string `yaml:"kind"`
 		Redis struct {
