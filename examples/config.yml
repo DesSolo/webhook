@@ -1,0 +1,36 @@
+# bind address and port
+bind_address: ":8080"
+
+# logging settings block
+logging:
+  # logging handler
+  #  text - logging as text
+  #  json - logging as json
+  handler: text
+  # advanced logging options
+  options:
+    # add source stack (default false)
+    add_source: false
+    # logging level (default 0)
+    #   Debug = -4
+    #   Info = 0
+    #   Warn = 4
+    #   Error = 8
+    level: -4
+  # advanced logging arguments (optional)
+  # args:
+  #   foo: bar
+
+# pubsub settings block
+pubsub:
+  # kind of pubsub
+  #  supported kinds:
+  #    redis - use redis pubsub
+  #    chain - use local channels
+  kind: chain
+  # redis pubsub settings (required if kind == redis)
+  redis:
+    # redis address
+    addr: 127.0.0.1:6379
+    # redis db (default 0)
+    db: 0
