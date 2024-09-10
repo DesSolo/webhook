@@ -39,7 +39,7 @@ const RequestList = (props: any) => {
                         <Typography.Text style={{ fontSize: 12, color: color }}>{moment(item.date).format("YYYY-MM-DD HH:mm:ss")}</Typography.Text>
                     </Space>
                     <Button type='primary'danger size='small' onClick={(e) => handleDeleteRequest(e, index)}>
-                        <CloseOutlined />
+                        <CloseOutlined style={{ fontSize: 10 }} />
                     </Button>
             </List.Item>
     }
@@ -50,8 +50,9 @@ const RequestList = (props: any) => {
             header={<div className='request-card-title'>Requests</div>}
             bordered
             style={{
-                minWidth: "350px",
-                minHeight: "100vh"
+                minWidth: "340px",
+                minHeight: "100vh",
+                marginLeft: "10px",
             }}
             dataSource={props.messages}
             renderItem={renderItem}

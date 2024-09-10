@@ -74,8 +74,11 @@ class Index extends React.Component<any, IndexState> {
             <ConfigProvider renderEmpty={() => <div>(empty)</div>}>
                 <Layout>
                     <Header style={{ alignItems: 'center'}}>
-                        <div style={{float: "right"}}>
-                            <NavCopy uuid={this.state.channel} />
+                        <div>
+                            <img src="/logo.svg" width={"50px"} style={{marginTop: "10px"}}/>
+                            <div style={{float: "right"}}>
+                                <NavCopy uuid={this.state.channel} />
+                            </div>
                         </div>
                     </Header>
 
