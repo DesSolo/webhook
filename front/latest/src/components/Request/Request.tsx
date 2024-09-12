@@ -5,7 +5,6 @@ import RequestMethod from './RequestMethod'
 import RequestHostLookup from './RequestHostLookup'
 import RequestContent from './RequestContent'
 import moment from 'moment'
-import "moment/locale/ru"
 
 const { Text } = Typography
 
@@ -39,9 +38,9 @@ class Request extends React.Component<RequestProps> {
     }
 
     requestDetailsItems() {
-        moment.locale("ru")
         const date = moment(this.props.request.date)
         
+        // TODO: note
         return [
             {
                 key: <RequestMethod method={this.props.request.method} />,

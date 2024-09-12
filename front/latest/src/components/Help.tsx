@@ -30,5 +30,3 @@ const Help = (props: { channel: string }) => {
 
 
 export default Help
-
-// export {WEBHOOK_URL}
