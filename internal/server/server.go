@@ -2,7 +2,9 @@ package server
 
 import (
 	"net/http"
+	"webhook/internal/pubsub"
 	"webhook/internal/server/handlers"
+	"webhook/internal/service"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -23,7 +25,7 @@ func NewServer(o Options) *Server {
 }
 
 // LoadRoutes loads routes
-func (s *Server) LoadRoutes(p handlers.Publisher, sb handlers.Subscriber) {
+func (s *Server) LoadRoutes(ps pubsub.PubSub, ws *service.Webhook) {
 	s.mux.Use(
 		middleware.RequestID,
 		middleware.Logger,
@@ -31,14 +33,14 @@ func (s *Server) LoadRoutes(p handlers.Publisher, sb handlers.Subscriber) {
 	)
 
 	s.mux.Route("/api/v1", func(r chi.Router) {
-
+		r.Post("/channel", handlers.HandleChannelCreate(ws))
 	})
 
 	s.mux.Route("/webhook/{token}", func(r chi.Router) {
-		r.Handle("/*", handlers.HandleWebhook(p))
+		r.Handle("/*", handlers.HandleWebhook(ws))
 	})
 
-	s.mux.Handle("/ws", handlers.HandleWS(sb))
+	s.mux.Handle("/ws", handlers.HandleWS(ps))
 
 	s.mux.Get("/health", handlers.HandleHealth())
 

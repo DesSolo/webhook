@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// newFromRequest create new request from http.Request
 func newFromRequest(r *http.Request, token string, data []byte) *entities.Request {
 	// TODO: duration, size
 	return &entities.Request{
@@ -27,13 +28,13 @@ func newFromRequest(r *http.Request, token string, data []byte) *entities.Reques
 	}
 }
 
-// Publisher interface for pubsub request
-type Publisher interface {
-	Publish(ctx context.Context, token string, req *entities.Request) error
+// WebhookHandler handle webhook
+type WebhookHandler interface {
+	Handle(ctx context.Context, rw http.ResponseWriter, req *entities.Request) error
 }
 
 // HandleWebhook handle webhook
-func HandleWebhook(p Publisher) http.HandlerFunc {
+func HandleWebhook(h WebhookHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := chi.URLParam(r, "token")
 		if token == "" {
@@ -57,15 +58,14 @@ func HandleWebhook(p Publisher) http.HandlerFunc {
 
 		req := newFromRequest(r, token, data)
 
-		if err := p.Publish(r.Context(), token, req); err != nil {
+		if err := h.Handle(r.Context(), w, req); err != nil {
 			slog.DebugContext(r.Context(),
-				"fault publish request",
+				"fault handle request",
 				"err", err,
 			)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		respondJson(w, http.StatusOK, req)
 	}
 }
