@@ -7,7 +7,7 @@ import (
 	"webhook/config"
 	"webhook/internal/logger"
 	"webhook/internal/pubsub"
-	"webhook/internal/pubsub/chain"
+	"webhook/internal/pubsub/channel"
 	"webhook/internal/pubsub/redis"
 	"webhook/internal/server"
 	"webhook/internal/service"
@@ -15,7 +15,7 @@ import (
 	goredis "github.com/redis/go-redis/v9"
 )
 
-// loadConfig инициализирует конфигурацию
+// loadConfig load configuration
 func loadConfig() (*config.Config, error) {
 	path := os.Getenv("CONFIG_FILE_PATH")
 	if path == "" {
@@ -25,7 +25,7 @@ func loadConfig() (*config.Config, error) {
 	return config.FromFile(path)
 }
 
-// configureLogger настройка логгера
+// configureLogger configure logger
 func configureLogger(cfg *config.Config) error {
 	o := slog.HandlerOptions{
 		AddSource: cfg.Logging.Option.AddSource,
@@ -58,11 +58,12 @@ func configureLogger(cfg *config.Config) error {
 	return nil
 }
 
+// loadPubSub load pubsub
 func loadPubSub(cfg *config.Config) (pubsub.PubSub, error) {
 	switch cfg.PubSub.Kind {
 	// TODO: rename
-	case "chain":
-		return chain.New(), nil
+	case "channel":
+		return channel.New(), nil
 	case "redis":
 		c := goredis.NewClient(&goredis.Options{
 			Addr: cfg.PubSub.Redis.Addr,
@@ -74,10 +75,12 @@ func loadPubSub(cfg *config.Config) (pubsub.PubSub, error) {
 	}
 }
 
+// loadWebhookService load webhook service
 func loadWebhookService(_ *config.Config, ps pubsub.PubSub) (*service.Webhook, error) {
 	return service.NewWebhook(ps), nil
 }
 
+// loadServer load http server
 func loadServer(cfg *config.Config, ps pubsub.PubSub, ws *service.Webhook) (*server.Server, error) {
 	srv := server.NewServer(server.Options{
 		ServeStatic: cfg.Server.ServeStatic,
@@ -88,6 +91,7 @@ func loadServer(cfg *config.Config, ps pubsub.PubSub, ws *service.Webhook) (*ser
 	return srv, nil
 }
 
+// fatal force exit with error
 func fatal(message string, err error) {
 	slog.Error(message, "err", err)
 	os.Exit(1)

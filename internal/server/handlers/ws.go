@@ -37,7 +37,11 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			logger.Error("failed to upgrade websocket", "err", err)
+			logger.ErrorContext(r.Context(), 
+				"failed to upgrade websocket", 
+				"err", err,
+			)
+
 			return
 		}
 		defer conn.Close()
@@ -48,7 +52,10 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 
 		go func() {
 			if err := s.Subscribe(r.Context(), channelID, ch); err != nil {
-				logger.ErrorContext(r.Context(), "failed to subscribe", "err", err)
+				logger.ErrorContext(r.Context(), 
+					"failed to subscribe", 
+					"err", err,
+				)
 
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -62,7 +69,11 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 				return
 			case req := <-ch:
 				if err := conn.WriteJSON(req); err != nil {
-					logger.ErrorContext(r.Context(), "failed to write message", "err", err)
+					logger.ErrorContext(r.Context(), 
+						"failed to write message", 
+						"err", err,
+					)
+					
 					return
 				}
 			}

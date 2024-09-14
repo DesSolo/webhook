@@ -50,6 +50,7 @@ type createChannelResponse struct {
 // parseResponser parse responser from create request
 func parseResponser(r *createChannelRequest) (responser.Responser, error) {
 	// TODO: auto discovery
+	// TODO: add more kinds
 	switch r.Kind {
 	case "simple":
 		return simple.NewSimple(

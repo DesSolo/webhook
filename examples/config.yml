@@ -33,8 +33,8 @@ pubsub:
   # kind of pubsub
   #  supported kinds:
   #    redis - use redis pubsub
-  #    chain - use local channels
-  kind: chain
+  #    channel - use local channels
+  kind: channel
   # redis pubsub settings (required if kind == redis)
   redis:
     # redis address
