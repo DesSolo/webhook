@@ -17,7 +17,6 @@ class RequestContent extends React.Component<RequestContentProps, RequestContent
         }
     }
     renderActions() {
-        // TODO: copy
         return <div className='request-card-action'>
             <Checkbox checked={this.state.formatJSON} onChange={() => this.setState({ formatJSON: !this.state.formatJSON })}>
                 Format JSON
