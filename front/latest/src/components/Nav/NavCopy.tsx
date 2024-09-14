@@ -5,7 +5,7 @@ const NavCopy = (props: { uuid: string }) => {
     const renderLabel = (name : string, text: string) => {
         return <div onClick={() => navigator.clipboard.writeText(text)}>
             <div>{name}</div>
-            <div style={{ fontSize: 12 }}>{text}</div>
+            <div style={{ fontSize: 12, color: "#777" }}>{text}</div>
         </div>
     }
 
