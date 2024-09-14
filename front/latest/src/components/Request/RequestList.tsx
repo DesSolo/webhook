@@ -4,29 +4,58 @@ import RequestMethod from './RequestMethod'
 import moment from 'moment'
 import { CloseOutlined } from '@ant-design/icons'
 
+const PAGE_SIZE = 9
 
-const RequestList = (props: any) => {
 
-    const [selected, setSelected] = useState(-1)
+const RequestList = (props: {
+    messages: any[]
+    onDeleteRequest: (uuid: string) => void
+    onSelectRequest: (uuid: string) => void
+}) => {
 
-    const handleSelectRequest = (e: React.MouseEvent<HTMLElement>, index: number) => {
+    const [selected, setSelected] = useState("")
+    const [page, setPage] = useState(1)
+
+    const handleSelectRequest = (e: React.MouseEvent<HTMLElement>, uuid: string) => {
         e.stopPropagation()
-        setSelected(index)
-        props.onSelectRequest(index)
+        setSelected(uuid)
+        props.onSelectRequest(uuid)
     }
 
-    const handleDeleteRequest = (e: React.MouseEvent<HTMLElement>, index: number) => {
+    const handleDeleteRequest = (e: React.MouseEvent<HTMLElement>, uuid: string) => {
         e.stopPropagation()
-        props.onDeleteRequest(index)
+        props.onDeleteRequest(uuid)
     }
 
-    const renderItem = (item: any, index: number) => {
-        const color = index === selected ? "white" : "black"
+    const dataSource = () => {
+        return props.messages.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    }
+
+    const renderFooter = () => {
+        const totalMessages = props.messages.length
+        const lastPage = Math.ceil(totalMessages / PAGE_SIZE)
+
+        const hasMessages = totalMessages > 0
+        const isFistPage = page === 1
+        const isLastPage = page === lastPage
+
+        return (
+            <>
+                <Button type="link" onClick={() => setPage(1)} disabled={!hasMessages || isFistPage}>First</Button>
+                <Button type="link" onClick={() => setPage(page - 1)} disabled={isFistPage}>← Prev</Button>
+                <Button type="link" onClick={() => setPage(page + 1)} disabled={isLastPage || !hasMessages}>Next →</Button>
+                <Button type="link" onClick={() => setPage(lastPage)} disabled={!hasMessages || isLastPage}>Last</Button>
+            </>
+        )
+    }
+
+    const renderItem = (item: any) => {
+        const color = item.uuid === selected ? "white" : "black"
         return <List.Item
                     key={item.uuid} 
-                    onClick={(e) => handleSelectRequest(e, index)}
+                    onClick={(e) => handleSelectRequest(e, item.uuid)}
                     style={{
-                        backgroundColor: index === selected ? "#5ca0ff" : "transparent",
+                        backgroundColor: item.uuid === selected ? "#5ca0ff" : "transparent",
                         color: color,
                         cursor: "pointer",
                     }}
@@ -38,7 +67,7 @@ const RequestList = (props: any) => {
                         </Space>
                         <Typography.Text style={{ fontSize: 12, color: color }}>{moment(item.date).format("YYYY-MM-DD HH:mm:ss")}</Typography.Text>
                     </Space>
-                    <Button type='primary'danger size='small' onClick={(e) => handleDeleteRequest(e, index)}>
+                    <Button type='primary'danger size='small' onClick={(e) => handleDeleteRequest(e, item.uuid)}>
                         <CloseOutlined style={{ fontSize: 10 }} />
                     </Button>
             </List.Item>
@@ -46,16 +75,16 @@ const RequestList = (props: any) => {
 
     return (
         <List
-            size='large'
-            header={<div className='request-card-title'>Requests</div>}
+            header={<div className='request-card-title'>Requests: {props.messages.length}</div>}
             bordered
             style={{
                 minWidth: "340px",
                 minHeight: "100vh",
                 marginLeft: "10px",
             }}
-            dataSource={props.messages}
+            dataSource={dataSource()}
             renderItem={renderItem}
+            footer={renderFooter()}
         />
     )
 }

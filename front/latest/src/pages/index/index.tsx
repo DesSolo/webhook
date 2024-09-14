@@ -19,10 +19,7 @@ interface IndexState {
     selectedRequest: any
     channel: string
     connected: boolean
-    // ws: any
 }
-
-
 
 class Index extends React.Component<any, IndexState> {
 
@@ -44,10 +41,13 @@ class Index extends React.Component<any, IndexState> {
         this.handleDeleteRequest = this.handleDeleteRequest.bind(this)
     }
 
+    /**
+     * Connects to the given websocket channel.
+     */
     connectToChannel(channel: string) {
         console.log("connectToWebSocket", channel)
 
-        this.setState({connected: false})
+        this.setState({ connected: false })
 
         if (this.wsRef.current) {
             console.log("Closing previous websocket")
@@ -73,7 +73,9 @@ class Index extends React.Component<any, IndexState> {
         ws.onmessage = (event) => {
             const request = JSON.parse(event.data)
 
-            this.setState({ messages: [...this.state.messages, request] })
+            this.setState((state) => {
+                return {messages: [...state.messages, request]}
+            })
 
             if (!this.state.selectedRequest) {
                 this.setState({ selectedRequest: request })
@@ -87,15 +89,41 @@ class Index extends React.Component<any, IndexState> {
         this.connectToChannel(uid)
     }
 
+    /**
+     * Gets the index of the message with the given UUID.
+     */
+    private indexOfMessage(uuid: string) : number {
+        return this.state.messages.findIndex((item: any) => item.uuid === uuid)
+    }
+
+    /**
+     * Updates the current channel by connecting to the new channel.
+     */
     handleUpdateChannel(channel: string) {
         this.connectToChannel(channel)
     }
 
-    handleSelectRequest(index: number) {
+    /**
+     * Selects the request with the given UUID.
+     */
+    handleSelectRequest(uuid: string) {
+        const index = this.indexOfMessage(uuid)
+        if (index < 0) {
+            return
+        }
+
         this.setState({ selectedRequest: this.state.messages[index] })
     }
 
-    handleDeleteRequest(index: number) {
+    /**
+     * Deletes the request with the given UUID.
+     */
+    handleDeleteRequest(uuid: string) {
+        const index = this.indexOfMessage(uuid)
+        if (index < 0) {
+            return
+        }
+
         this.state.messages.splice(index, 1)
         this.setState({ messages: this.state.messages })
     }
@@ -123,7 +151,11 @@ class Index extends React.Component<any, IndexState> {
                                 }}
                             >
                                 <Space direction="horizontal" align="start">
-                                    <RequestList messages={this.state.messages} onDeleteRequest={this.handleDeleteRequest} onSelectRequest={this.handleSelectRequest} />
+                                    <RequestList 
+                                        messages={this.state.messages} 
+                                        onDeleteRequest={this.handleDeleteRequest} 
+                                        onSelectRequest={this.handleSelectRequest}
+                                    />
                                     {!this.state.selectedRequest && <Help channel={this.state.channel} />}
                                     {this.state.selectedRequest && <Request request={this.state.selectedRequest} />}
                                 </Space>
