@@ -37,7 +37,9 @@ const NavCreate = (props: { onUpdateChannel: any }) => {
                     <Button form="createRequest" type="primary" key="submit" htmlType="submit">Create</Button>
                 ]}
             >
-                <Typography.Text>Customize your response</Typography.Text>
+                <div style={{ marginBottom: 20 }}>
+                    <Typography.Text>Customize your response</Typography.Text>
+                </div>
                 <ChannelCreate onSuccess={onSuccess} onError={onError} />
             </Modal>
         </>
