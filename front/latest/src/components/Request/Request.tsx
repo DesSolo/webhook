@@ -40,7 +40,7 @@ class Request extends React.Component<RequestProps> {
     requestDetailsItems() {
         const date = moment(this.props.request.date)
         
-        // TODO: note
+        // TODO: note, full uri
         return [
             {
                 key: <RequestMethod method={this.props.request.method} />,
