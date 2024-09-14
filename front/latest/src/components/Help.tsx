@@ -2,20 +2,19 @@ import { Space, Typography } from 'antd';
 
 
 const Help = (props: { channel: string }) => {
-    const channelURL = () => {
-        return import.meta.env.VITE_WEBHOOK_URL + props.channel
-    }
+    const channelURL = import.meta.env.VITE_WEBHOOK_URL + props.channel
 
     const items = [
         {
             label: "Your uniq URL",
-            value: channelURL(),
+            value: channelURL,
         },
         {
             label: "Example cURL",
-            value: "curl --request POST --header 'Content-Type: application/json' --url " + channelURL() + " --data '{\"key\": \"value\"}'",
+            value: "curl --request POST --header 'Content-Type: application/json' --url " + channelURL + " --data '{\"key\": \"value\"}'",
         }
     ]
+
     return (
         <Space direction="vertical">
             {items.map((item, index) => (
