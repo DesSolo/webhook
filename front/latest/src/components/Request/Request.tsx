@@ -6,8 +6,12 @@ import RequestHostLookup from './RequestHostLookup'
 import RequestContent from './RequestContent'
 import moment from 'moment'
 
-const { Text } = Typography
+const { Text, Link } = Typography
 
+
+const url = (request: any) => {
+    return request.schema + "://" + request.host + request.uri
+}
 
 
 interface RequestProps {
@@ -21,7 +25,7 @@ class Request extends React.Component<RequestProps> {
         let result = ["curl"]
 
         result.push('--request', this.props.request.method, nl)
-        result.push('--url', this.props.request.uri, nl)
+        result.push('--url', url(this.props.request), nl)
 
         if (this.props.request.headers) {
             Object.entries(this.props.request.headers).map((item: any) => {
@@ -32,6 +36,8 @@ class Request extends React.Component<RequestProps> {
 
         if (this.props.request.data) {
             result.push(`--data '${atob(this.props.request.data)}'`)
+        } else {
+            result.splice(-1)
         }
 
         navigator.clipboard.writeText(result.join(" "))
@@ -39,12 +45,14 @@ class Request extends React.Component<RequestProps> {
 
     requestDetailsItems() {
         const date = moment(this.props.request.date)
+
+        const requestURL = url(this.props.request)
         
         // TODO: note, full uri
         return [
             {
                 key: <RequestMethod method={this.props.request.method} />,
-                value: this.props.request.uri,
+                value: <Link href={requestURL} target="_blank">{requestURL}</Link>,
             },
             {
                 key: "Host",
@@ -117,7 +125,7 @@ class Request extends React.Component<RequestProps> {
     }
 
     render() {
-        function listItem(item: { key: any; value: string }, className: string) {           
+        function listItem(item: { key: any; value: any }, className: string) {           
             return <List.Item>
                 <div style={{ display: "flex" }}>
                     <div style={{minWidth: "150px"}}>{item.key}</div>
