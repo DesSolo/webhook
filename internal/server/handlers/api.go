@@ -53,7 +53,7 @@ func parseResponser(r *createChannelRequest) (responser.Responser, error) {
 	// TODO: add more kinds
 	switch r.Kind {
 	case "simple":
-		return simple.NewSimple(
+		return simple.New(
 			r.Simple.StatusCode,
 			r.Simple.ContentType,
 			r.Simple.Content,
@@ -99,7 +99,18 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 
 		token := uuid.New().String()
 
-		ws.Register(token, responser)
+		if err := ws.Register(r.Context(), token, responser); err != nil {
+			slog.ErrorContext(r.Context(),
+				"fault register responser",
+				"err", err,
+			)
+
+			respondJson(w, http.StatusInternalServerError, errorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
 
 		respondJson(w, http.StatusOK, createChannelResponse{
 			Token: token,

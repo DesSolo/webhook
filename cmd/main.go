@@ -8,9 +8,12 @@ import (
 	"webhook/internal/logger"
 	"webhook/internal/pubsub"
 	"webhook/internal/pubsub/channel"
-	"webhook/internal/pubsub/redis"
+	predis "webhook/internal/pubsub/redis"
 	"webhook/internal/server"
 	"webhook/internal/service"
+	"webhook/internal/storage"
+	"webhook/internal/storage/memory"
+	sredis "webhook/internal/storage/redis"
 
 	goredis "github.com/redis/go-redis/v9"
 )
@@ -61,7 +64,6 @@ func configureLogger(cfg *config.Config) error {
 // loadPubSub load pubsub
 func loadPubSub(cfg *config.Config) (pubsub.PubSub, error) {
 	switch cfg.PubSub.Kind {
-	// TODO: rename
 	case "channel":
 		return channel.New(), nil
 	case "redis":
@@ -69,15 +71,31 @@ func loadPubSub(cfg *config.Config) (pubsub.PubSub, error) {
 			Addr: cfg.PubSub.Redis.Addr,
 			DB:   cfg.PubSub.Redis.DB,
 		})
-		return redis.New(c), nil
+		return predis.New(c), nil
 	default:
 		return nil, fmt.Errorf("pubsub: %q not supported", cfg.PubSub.Kind)
 	}
 }
 
+// loadResponseStorage load response storage
+func loadResponseStorage(cfg *config.Config) (storage.ResponseStorage, error) {
+	switch cfg.Storage.Kind {
+	case "memory":
+		return memory.New(), nil
+	case "redis":
+		c := goredis.NewClient(&goredis.Options{
+			Addr: cfg.Storage.Redis.Addr,
+			DB:   cfg.Storage.Redis.DB,
+		})
+		return sredis.New(c), nil
+	default:
+		return nil, fmt.Errorf("storage: %q not supported", cfg.Storage.Kind)
+	}
+}
+
 // loadWebhookService load webhook service
-func loadWebhookService(_ *config.Config, ps pubsub.PubSub) (*service.Webhook, error) {
-	return service.NewWebhook(ps), nil
+func loadWebhookService(_ *config.Config, ps pubsub.PubSub, st storage.ResponseStorage) (*service.Webhook, error) {
+	return service.NewWebhook(ps, st), nil
 }
 
 // loadServer load http server
@@ -112,7 +130,12 @@ func main() {
 		fatal("fault load pubsub", err)
 	}
 
-	ws, err := loadWebhookService(cfg, ps)
+	st, err := loadResponseStorage(cfg)
+	if err != nil {
+		fatal("fault load storage", err)
+	}
+
+	ws, err := loadWebhookService(cfg, ps, st)
 	if err != nil {
 		fatal("fault load webhook service", err)
 	}

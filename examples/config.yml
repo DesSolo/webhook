@@ -32,9 +32,23 @@ server:
 pubsub:
   # kind of pubsub
   #  supported kinds:
-  #    redis - use redis pubsub
   #    channel - use local channels
+  #    redis - use redis pubsub
   kind: channel
+  # redis pubsub settings (required if kind == redis)
+  redis:
+    # redis address
+    addr: 127.0.0.1:6379
+    # redis db (default 0)
+    db: 0
+
+# storage settings block
+storage:
+  # kind of storage
+  #  supported kinds:
+  #    memory - store all response rules in memory
+  #    redis - store all response rules in redis
+  kind: memory
   # redis pubsub settings (required if kind == redis)
   redis:
     # redis address
