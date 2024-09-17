@@ -15,12 +15,20 @@ import (
 // newFromRequest create new request from http.Request
 func newFromRequest(r *http.Request, token string, data []byte) *entities.Request {
 	// TODO: duration, size
+
+	schema := "http"
+	if r.TLS != nil {
+		schema = "https"
+	}
+
 	return &entities.Request{
 		UUID:    uuid.New().String(),
 		Token:   token,
 		Date:    time.Now().Format(time.RFC3339),
 		IP:      r.RemoteAddr,
 		Method:  r.Method,
+		Schema:  schema,
+		Host:    r.Host,
 		URI:     r.RequestURI,
 		Query:   r.URL.Query().Encode(),
 		Headers: r.Header,
