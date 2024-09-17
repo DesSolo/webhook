@@ -23,6 +23,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: 
-          - dessolo/webhook:latest
-          - dessolo/webhook:${{ github.ref_name }}
+        tags: |
+          dessolo/webhook:latest
+          dessolo/webhook:${{ github.ref_name }}
