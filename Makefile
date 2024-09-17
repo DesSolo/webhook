@@ -3,6 +3,12 @@ PROJECT_NAME=webhook
 tidy:
 	go mod tidy
 
+VERSION=`cat VERSION`
+
+tag:
+	git tag -a ${VERSION}
+	git push --tags
+
 MAIN_FILE_PATH=cmd/main.go
 CONFIG_FILE_PATH=examples/config.yml
 
