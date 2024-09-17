@@ -2,7 +2,7 @@ name: Publish Docker Image
 
 on:
   push:
-    branches: ["master", "ci"]
+    tags: ["*"]
 
 jobs:
   build-and-push:
@@ -23,4 +23,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: dessolo/webhook:latest
+        tags: 
+          - dessolo/webhook:latest
+          - dessolo/webhook:${{ github.ref_name }}
