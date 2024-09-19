@@ -16,10 +16,13 @@ run:
 	CONFIG_FILE_PATH=${CONFIG_FILE_PATH} go run $(MAIN_FILE_PATH)
 
 BINARIES_DIRECTORY=bin
-LDFLAGS="-w -s"
+LDFLAGS="-w -s -X main.version=${VERSION}"
 
 clean:
 	rm -rf ${BINARIES_DIRECTORY}
+
+build: clean
+	go build -ldflags=${LDFLAGS} -o ${BINARIES_DIRECTORY}/${PROJECT_NAME} ${MAIN_FILE_PATH}
 
 build-docker: clean
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags=${LDFLAGS} -o ${BINARIES_DIRECTORY}/${PROJECT_NAME}_docker ${MAIN_FILE_PATH}

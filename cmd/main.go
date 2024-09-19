@@ -115,6 +115,19 @@ func fatal(message string, err error) {
 	os.Exit(1)
 }
 
+const bannerTemplate = `
+                __    __                __  
+ _      _____  / /_  / /_  ____  ____  / /__
+| | /| / / _ \/ __ \/ __ \/ __ \/ __ \/ //_/
+| |/ |/ /  __/ /_/ / / / / /_/ / /_/ / ,<   
+|__/|__/\___/_.___/_/ /_/\____/\____/_/|_|  							   
+
+ver: %s
+
+`
+
+var version = "local"
+
 func main() {
 	cfg, err := loadConfig()
 	if err != nil {
@@ -144,6 +157,8 @@ func main() {
 	if err != nil {
 		fatal("fault load server", err)
 	}
+
+	fmt.Printf(bannerTemplate, version)
 
 	slog.Info("server running", "address", cfg.BindAddress)
 
