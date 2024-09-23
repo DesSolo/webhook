@@ -1,5 +1,7 @@
 import React from 'react'
 import { Card, Checkbox, Typography } from 'antd'
+import {decode as b64Decode} from 'js-base64'
+
 
 interface RequestContentProps {
     content: string
@@ -21,7 +23,7 @@ class RequestContent extends React.Component<RequestContentProps, RequestContent
             <Checkbox checked={this.state.formatJSON} onChange={() => this.setState({ formatJSON: !this.state.formatJSON })}>
                 Format JSON
             </Checkbox>
-            <Typography.Text copyable={{ text: atob(this.props.content) }}/>
+            <Typography.Text copyable={{ text: b64Decode(this.props.content) }}/>
         </div>
     }
 
@@ -33,7 +35,7 @@ class RequestContent extends React.Component<RequestContentProps, RequestContent
         }
 
         try {
-            data = atob(data)
+            data = b64Decode(data)
         } catch {}
         
         if (this.state.formatJSON) {

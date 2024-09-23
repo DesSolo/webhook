@@ -40,7 +40,6 @@ const ChannelCreate = (props: {onSuccess: any, onError: any}) => {
             props.onSuccess(data.token)
         })
         .catch((error) => {
-            console.log("HHERE")
             props.onError(error);
         })
     }

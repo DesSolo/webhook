@@ -5,6 +5,7 @@ import RequestMethod from './RequestMethod'
 import RequestHostLookup from './RequestHostLookup'
 import RequestContent from './RequestContent'
 import moment from 'moment'
+import {decode as b64Decode} from 'js-base64'
 
 const { Text, Link } = Typography
 
@@ -35,7 +36,7 @@ class Request extends React.Component<RequestProps> {
         }
 
         if (this.props.request.data) {
-            result.push(`--data '${atob(this.props.request.data)}'`)
+            result.push(`--data '${b64Decode(this.props.request.data)}'`)
         } else {
             result.splice(-1)
         }
@@ -112,7 +113,7 @@ class Request extends React.Component<RequestProps> {
             return items
         }
 
-        atob(this.props.request.data).split("&").forEach((item: string) => {
+        b64Decode(this.props.request.data).split("&").forEach((item: string) => {
             const [key, value] = item.split("=")
             items.push({
                 key: key,
