@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+
 	"webhook/config"
 	"webhook/internal/logger"
 	"webhook/internal/pubsub"
@@ -158,6 +159,7 @@ func main() {
 		fatal("fault load server", err)
 	}
 
+	// nolint:forbidigo
 	fmt.Printf(bannerTemplate, version)
 
 	slog.Info("server running", "address", cfg.BindAddress)

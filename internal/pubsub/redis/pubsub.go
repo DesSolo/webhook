@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"webhook/internal/entities"
 
 	goredis "github.com/redis/go-redis/v9"
@@ -21,7 +22,7 @@ func New(client goredis.UniversalClient) *PubSub {
 	}
 }
 
-// Publish publish request to topic
+// Publish request to topic
 func (p *PubSub) Publish(ctx context.Context, token string, r *entities.Request) error {
 	data, err := json.Marshal(r)
 	if err != nil {
@@ -31,7 +32,7 @@ func (p *PubSub) Publish(ctx context.Context, token string, r *entities.Request)
 	return p.client.Publish(ctx, token, data).Err()
 }
 
-// Subscribe subscribe to topic
+// Subscribe to topic
 func (p *PubSub) Subscribe(ctx context.Context, token string, messages chan<- *entities.Request) error {
 	sub := p.client.PSubscribe(ctx, token)
 
@@ -50,7 +51,7 @@ func (p *PubSub) Subscribe(ctx context.Context, token string, messages chan<- *e
 	}
 }
 
-// Close close pubsub
+// Close pubsub
 func (p *PubSub) Close() error {
 	return p.client.Close()
 }

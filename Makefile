@@ -33,3 +33,20 @@ COMPOSE_FILE_PATH=docker-compose.d/docker-compose.yaml
 
 compose-up:
 	$(CONTAINER_RUNNER) compose -f $(COMPOSE_FILE_PATH) up
+
+LOCAL_BIN := $(CURDIR)/bin
+GOOSE_VERSION := v3.24.2
+LINT_VERSION := 2.0.2
+
+.prep_bin:
+	mkdir -p ${LOCAL_BIN}
+
+.install-lint:
+	curl -Ls https://github.com/golangci/golangci-lint/releases/download/v${LINT_VERSION}/golangci-lint-${LINT_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components=1 -C ${LOCAL_BIN} golangci-lint-${LINT_VERSION}-linux-amd64/golangci-lint
+
+install-deps: \
+	.prep_bin \
+	.install-lint
+
+lint: $(LINT_BIN)
+	$(LOCAL_BIN)/golangci-lint run

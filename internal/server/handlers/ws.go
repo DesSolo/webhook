@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
+
 	"webhook/internal/entities"
 
 	"github.com/gorilla/websocket"
@@ -25,6 +26,8 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
 		channelID := r.URL.Query().Get("channel")
 		if channelID == "" {
 			w.WriteHeader(http.StatusBadRequest)
@@ -37,8 +40,7 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			logger.ErrorContext(r.Context(), 
-				"failed to upgrade websocket", 
+			logger.ErrorContext(ctx, "failed to upgrade websocket",
 				"err", err,
 			)
 
@@ -46,14 +48,13 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 		}
 		defer conn.Close()
 
-		logger.InfoContext(r.Context(), "connected")
+		logger.InfoContext(ctx, "connected")
 
 		ch := make(chan *entities.Request)
 
 		go func() {
-			if err := s.Subscribe(r.Context(), channelID, ch); err != nil {
-				logger.ErrorContext(r.Context(), 
-					"failed to subscribe", 
+			if err := s.Subscribe(ctx, channelID, ch); err != nil {
+				logger.ErrorContext(ctx, "failed to subscribe",
 					"err", err,
 				)
 
@@ -64,16 +65,15 @@ func HandleWS(s Subscriber) http.HandlerFunc {
 
 		for {
 			select {
-			case <-r.Context().Done():
-				logger.InfoContext(r.Context(), "disconnected")
+			case <-ctx.Done():
+				logger.InfoContext(ctx, "disconnected")
 				return
 			case req := <-ch:
 				if err := conn.WriteJSON(req); err != nil {
-					logger.ErrorContext(r.Context(), 
-						"failed to write message", 
+					logger.ErrorContext(ctx, "failed to write message",
 						"err", err,
 					)
-					
+
 					return
 				}
 			}

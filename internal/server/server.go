@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+
 	"webhook/internal/pubsub"
 	"webhook/internal/server/handlers"
 	"webhook/internal/service"
@@ -53,5 +54,6 @@ func (s *Server) LoadRoutes(ps pubsub.PubSub, ws *service.Webhook) {
 
 // Run starts HTTP server
 func (s *Server) Run(address string) error {
+	// nolint:gosec
 	return http.ListenAndServe(address, s.mux)
 }

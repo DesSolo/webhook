@@ -7,7 +7,7 @@ func Register(r Responser) {
 	registry[r.Kind()] = r
 }
 
-// Get get responser from registry
+// Get responser from registry
 func Get(kind string) (Responser, bool) {
 	r, ok := registry[kind]
 	return r, ok

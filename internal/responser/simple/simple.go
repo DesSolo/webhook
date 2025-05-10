@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+
 	"webhook/internal/entities"
 	"webhook/internal/responser"
 )
@@ -12,7 +13,7 @@ func init() {
 	responser.Register(&Simple{})
 }
 
-// Simple simple responser
+// Simple responser
 type Simple struct {
 	// Response status code
 	StatusCode int
@@ -42,7 +43,10 @@ func (s *Simple) Response(w http.ResponseWriter, r *entities.Request) error {
 
 	w.Header().Set("Content-Type", s.ContentType)
 	w.WriteHeader(s.StatusCode)
-	w.Write([]byte(s.Content))
+	if _, err := w.Write([]byte(s.Content)); err != nil {
+		return err
+	}
+
 	return nil
 }
 

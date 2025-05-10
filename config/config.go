@@ -39,6 +39,7 @@ type Config struct {
 
 // FromFile init config from file
 func FromFile(filePath string) (*Config, error) {
+	// nolint:gosec
 	body, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err

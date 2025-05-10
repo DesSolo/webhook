@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"time"
+
 	"webhook/internal/responser"
 	"webhook/internal/responser/simple"
 	"webhook/internal/service"
@@ -47,31 +48,14 @@ type createChannelResponse struct {
 	Token string `json:"token"`
 }
 
-// parseResponser parse responser from create request
-func parseResponser(r *createChannelRequest) (responser.Responser, error) {
-	// TODO: auto discovery
-	// TODO: add more kinds
-	switch r.Kind {
-	case "simple":
-		return simple.New(
-			r.Simple.StatusCode,
-			r.Simple.ContentType,
-			r.Simple.Content,
-			time.Duration(r.Simple.Timeout)*time.Second,
-		), nil
-	default:
-		return nil, fmt.Errorf("kind %s not supported", r.Kind)
-	}
-}
-
 // HandleChannelCreate handle create new channel
 func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req createChannelRequest
+		ctx := r.Context()
 
+		var req createChannelRequest
 		if err := bindJson(r, &req); err != nil {
-			slog.ErrorContext(r.Context(),
-				"fault bind request",
+			slog.ErrorContext(ctx, "fault bind request",
 				"err", err,
 			)
 
@@ -83,10 +67,9 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		responser, err := parseResponser(&req)
+		responser, err := resolveResponser(&req)
 		if err != nil {
-			slog.ErrorContext(r.Context(),
-				"fault parse responser",
+			slog.ErrorContext(ctx, "fault resolve responser",
 				"err", err,
 			)
 
@@ -99,9 +82,8 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 
 		token := uuid.New().String()
 
-		if err := ws.Register(r.Context(), token, responser); err != nil {
-			slog.ErrorContext(r.Context(),
-				"fault register responser",
+		if err := ws.Register(ctx, token, responser); err != nil {
+			slog.ErrorContext(ctx, "fault register responser",
 				"err", err,
 			)
 
@@ -115,5 +97,22 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 		respondJson(w, http.StatusOK, createChannelResponse{
 			Token: token,
 		})
+	}
+}
+
+// parseResponser parse responser from create request
+func resolveResponser(r *createChannelRequest) (responser.Responser, error) {
+	// TODO: auto discovery
+	// TODO: add more kinds
+	switch r.Kind {
+	case "simple":
+		return simple.New(
+			r.Simple.StatusCode,
+			r.Simple.ContentType,
+			r.Simple.Content,
+			time.Duration(r.Simple.Timeout)*time.Second,
+		), nil
+	default:
+		return nil, fmt.Errorf("kind %s not supported", r.Kind)
 	}
 }

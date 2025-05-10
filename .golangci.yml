@@ -1,0 +1,42 @@
+version: "2"
+
+run:
+  timeout: 10m
+  modules-download-mode: readonly
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - goconst
+    - ineffassign
+    - contextcheck
+    - forbidigo
+    - gosec
+    - govet
+    - prealloc
+    - revive
+    - staticcheck
+    - unused
+    - wastedassign
+    - whitespace
+    - gocognit
+  settings:
+    gosec:
+      excludes:
+        - G104
+        - G307
+        - G404
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+  exclusions:
+    rules:
+      - linters: [errcheck]
+        source: "^\\s*defer\\s+"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
