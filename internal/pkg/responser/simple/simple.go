@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"webhook/internal/entities"
-	"webhook/internal/responser"
+	"webhook/internal/pkg/entities"
+	"webhook/internal/pkg/responser"
 )
 
 func init() {

@@ -3,7 +3,8 @@ package redis
 import (
 	"encoding/json"
 	"fmt"
-	"webhook/internal/responser"
+
+	"webhook/internal/pkg/responser"
 )
 
 // metadata is internal entity for serialization

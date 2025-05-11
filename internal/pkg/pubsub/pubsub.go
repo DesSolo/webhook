@@ -3,7 +3,7 @@ package pubsub
 import (
 	"context"
 
-	"webhook/internal/entities"
+	"webhook/internal/pkg/entities"
 )
 
 type PubSub interface {

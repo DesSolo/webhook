@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"webhook/internal/entities"
+	"webhook/internal/pkg/entities"
 
 	goredis "github.com/redis/go-redis/v9"
 )

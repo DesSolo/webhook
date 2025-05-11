@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"webhook/internal/entities"
+	"webhook/internal/pkg/entities"
 )
 
 // PubSub based on channels

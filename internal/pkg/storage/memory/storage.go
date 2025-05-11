@@ -3,8 +3,9 @@ package memory
 import (
 	"context"
 	"sync"
-	"webhook/internal/responser"
-	"webhook/internal/storage"
+
+	"webhook/internal/pkg/responser"
+	"webhook/internal/pkg/storage"
 )
 
 // Storage memory storage
@@ -41,4 +42,9 @@ func (s *Storage) LoadResponser(_ context.Context, token string) (responser.Resp
 	}
 
 	return rs, nil
+}
+
+// Close ...
+func (s *Storage) Close() error {
+	return nil
 }

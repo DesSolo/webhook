@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"webhook/internal/entities"
+	"webhook/internal/pkg/entities"
 
 	"github.com/gorilla/websocket"
 )

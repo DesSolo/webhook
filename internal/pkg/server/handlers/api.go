@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"webhook/internal/responser"
-	"webhook/internal/responser/simple"
-	"webhook/internal/service"
+	"webhook/internal/pkg/responser"
+	"webhook/internal/pkg/responser/simple"
+	"webhook/internal/pkg/service"
 
 	"github.com/google/uuid"
 )

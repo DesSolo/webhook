@@ -3,7 +3,8 @@ package redis
 import (
 	"context"
 	"fmt"
-	"webhook/internal/responser"
+
+	"webhook/internal/pkg/responser"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -33,4 +34,9 @@ func (s *Storage) LoadResponser(ctx context.Context, token string) (responser.Re
 	}
 
 	return m.Responser, nil
+}
+
+// Close ...
+func (s *Storage) Close() error {
+	return s.client.Close()
 }

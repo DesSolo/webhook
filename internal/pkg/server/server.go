@@ -3,9 +3,9 @@ package server
 import (
 	"net/http"
 
-	"webhook/internal/pubsub"
-	"webhook/internal/server/handlers"
-	"webhook/internal/service"
+	"webhook/internal/pkg/pubsub"
+	"webhook/internal/pkg/server/handlers"
+	"webhook/internal/pkg/service"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

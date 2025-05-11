@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
-	"webhook/internal/entities"
+	"webhook/internal/pkg/entities"
 )
 
 // WebhookHandler handle webhook

@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"webhook/internal/entities"
-	"webhook/internal/responser"
-	"webhook/internal/responser/simple"
+	"webhook/internal/pkg/entities"
+	"webhook/internal/pkg/responser"
+	"webhook/internal/pkg/responser/simple"
 )
 
 // TODO: move to config
@@ -48,20 +48,9 @@ func (w *Webhook) Register(ctx context.Context, token string, rs responser.Respo
 	return nil
 }
 
-// Responser get responser by token
-func (w *Webhook) Responser(ctx context.Context, token string) responser.Responser {
-	rs, err := w.storage.LoadResponser(ctx, token)
-	if err != nil {
-		slog.Error("fault load responser", "err", err)
-		return defaultResponser
-	}
-
-	return rs
-}
-
-// Handle handle webhook request
+// Handle webhook request
 func (w *Webhook) Handle(ctx context.Context, rw http.ResponseWriter, req *entities.Request) error {
-	rs := w.Responser(ctx, req.Token)
+	rs := w.resolveResponser(ctx, req.Token)
 
 	if err := rs.Response(rw, req); err != nil {
 		return fmt.Errorf("fault response request: %w", err)
@@ -72,4 +61,15 @@ func (w *Webhook) Handle(ctx context.Context, rw http.ResponseWriter, req *entit
 	}
 
 	return nil
+}
+
+// Responser get responser by token
+func (w *Webhook) resolveResponser(ctx context.Context, token string) responser.Responser {
+	rs, err := w.storage.LoadResponser(ctx, token)
+	if err != nil {
+		slog.Error("fault load responser", "err", err)
+		return defaultResponser
+	}
+
+	return rs
 }

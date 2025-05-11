@@ -2,7 +2,8 @@ package responser
 
 import (
 	"net/http"
-	"webhook/internal/entities"
+
+	"webhook/internal/pkg/entities"
 )
 
 type DumpRestorer interface {
