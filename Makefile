@@ -36,7 +36,7 @@ compose-up:
 
 LOCAL_BIN := $(CURDIR)/bin
 GOOSE_VERSION := v3.24.2
-LINT_VERSION := 2.0.2
+LINT_VERSION := 2.1.6
 
 .prep_bin:
 	mkdir -p ${LOCAL_BIN}

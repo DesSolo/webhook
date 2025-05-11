@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-// respondJson responds JSON data
-func respondJson(w http.ResponseWriter, statusCode int, data any) {
+// respondJSON responds JSON data
+func respondJSON(w http.ResponseWriter, statusCode int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
@@ -28,8 +28,8 @@ type Validator interface {
 	Validate() error
 }
 
-// bindJson unmarshal json
-func bindJson(r *http.Request, v Validator) error {
+// bindJSON unmarshal json
+func bindJSON(r *http.Request, v Validator) error {
 	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
 		return err
 	}

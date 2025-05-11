@@ -36,7 +36,7 @@ func New(statusCode int, contentType string, content string, timeout time.Durati
 }
 
 // Response apply response for request
-func (s *Simple) Response(w http.ResponseWriter, r *entities.Request) error {
+func (s *Simple) Response(w http.ResponseWriter, _ *entities.Request) error {
 	if s.Timeout > 0 {
 		time.Sleep(s.Timeout)
 	}

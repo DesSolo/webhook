@@ -43,7 +43,7 @@ func main() {
 		}
 	}()
 
-	application := app.NewApp()
+	application := app.New()
 
 	// nolint:forbidigo
 	fmt.Printf(bannerTemplate, version)

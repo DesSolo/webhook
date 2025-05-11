@@ -7,7 +7,7 @@ import (
 
 // HandleHealth health check
 func HandleHealth() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		if _, err := w.Write([]byte("OK")); err != nil {

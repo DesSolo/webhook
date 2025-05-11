@@ -54,12 +54,12 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 		ctx := r.Context()
 
 		var req createChannelRequest
-		if err := bindJson(r, &req); err != nil {
+		if err := bindJSON(r, &req); err != nil {
 			slog.ErrorContext(ctx, "fault bind request",
 				"err", err,
 			)
 
-			respondJson(w, http.StatusBadRequest, errorMessage{
+			respondJSON(w, http.StatusBadRequest, errorMessage{
 				Message: err.Error(),
 			})
 
@@ -73,7 +73,7 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 				"err", err,
 			)
 
-			respondJson(w, http.StatusBadRequest, errorMessage{
+			respondJSON(w, http.StatusBadRequest, errorMessage{
 				Message: err.Error(),
 			})
 
@@ -87,14 +87,14 @@ func HandleChannelCreate(ws *service.Webhook) http.HandlerFunc {
 				"err", err,
 			)
 
-			respondJson(w, http.StatusInternalServerError, errorMessage{
+			respondJSON(w, http.StatusInternalServerError, errorMessage{
 				Message: err.Error(),
 			})
 
 			return
 		}
 
-		respondJson(w, http.StatusOK, createChannelResponse{
+		respondJSON(w, http.StatusOK, createChannelResponse{
 			Token: token,
 		})
 	}

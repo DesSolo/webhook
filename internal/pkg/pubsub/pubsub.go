@@ -6,6 +6,7 @@ import (
 	"webhook/internal/pkg/entities"
 )
 
+// PubSub publish subscribe interface
 type PubSub interface {
 	Publish(ctx context.Context, topic string, r *entities.Request) error
 	Subscribe(ctx context.Context, topic string, messages chan<- *entities.Request) error

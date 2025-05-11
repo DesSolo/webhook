@@ -1,5 +1,7 @@
+// Package entities is a global entities for webhook
 package entities
 
+// Request webhook request
 type Request struct {
 	UUID    string              `json:"uuid"`
 	Token   string              `json:"token"`

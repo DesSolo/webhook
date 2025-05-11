@@ -8,12 +8,15 @@ import (
 	"webhook/internal/pkg/closer"
 )
 
+// App application
 type App struct{}
 
-func NewApp() *App {
+// New constructor
+func New() *App {
 	return &App{}
 }
 
+// Run application
 func (a *App) Run(_ context.Context) error {
 	// TODO: use context
 	cfg, err := loadConfig()

@@ -27,14 +27,12 @@ linters:
         - G104
         - G307
         - G404
-    revive:
-      rules:
-        - name: package-comments
-          disabled: true
   exclusions:
     rules:
       - linters: [errcheck]
         source: "^\\s*defer\\s+"
+      - linters: [revive]
+        text: "package-comments: should have a package comment"
 
 formatters:
   enable:

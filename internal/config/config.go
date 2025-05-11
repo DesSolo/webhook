@@ -1,3 +1,4 @@
+// Package config is a configuration webhook server
 package config
 
 import (
